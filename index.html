@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="id" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Linktree - Alfrid Kekang</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+    />
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        background-image: url("img/lynkid2.jpg");
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
+      }
+
+      .glass-effect {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      .link-card {
+        transition: all 0.3s ease;
+      }
+
+      .link-card:hover {
+        transform: translateY(-3px);
+      }
+
+      .profile-cover {
+        height: 200px;
+        background-image: url("img/cover.jpg");
+        background-size: cover;
+        background-position: center;
+        border-radius: 20px 20px 0 0;
+      }
+
+      .profile-img {
+        border: 4px solid rgba(255, 255, 255, 0.9);
+        margin-top: -60px;
+      }
+
+      /* Add these new animation keyframes and classes */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideUp {
+        from {
+          transform: translateY(50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .animate-fade-in {
+        animation: fadeIn 1s ease forwards;
+      }
+
+      .animate-slide-up {
+        opacity: 0;
+        animation: slideUp 1s ease forwards;
+      }
+
+      .delay-100 {
+        animation-delay: 100ms;
+      }
+
+      .delay-200 {
+        animation-delay: 200ms;
+      }
+
+      .delay-300 {
+        animation-delay: 300ms;
+      }
+
+      .delay-400 {
+        animation-delay: 400ms;
+      }
+
+      @keyframes zoomIn {
+        from {
+          transform: scale(0.8);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+
+      .gallery-item {
+        opacity: 0;
+        animation: zoomIn 0.6s ease forwards;
+        cursor: pointer;
+        position: relative;
+      }
+
+      .gallery-item:nth-child(1) {
+        animation-delay: 100ms;
+      }
+      .gallery-item:nth-child(2) {
+        animation-delay: 200ms;
+      }
+      .gallery-item:nth-child(3) {
+        animation-delay: 300ms;
+      }
+      .gallery-item:nth-child(4) {
+        animation-delay: 400ms;
+      }
+      .gallery-item:nth-child(5) {
+        animation-delay: 500ms;
+      }
+      .gallery-item:nth-child(6) {
+        animation-delay: 600ms;
+      }
+
+      .frame {
+        position: relative;
+        overflow: hidden;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        aspect-ratio: 1;
+        background: rgba(0, 0, 0, 0.1);
+      }
+
+      .frame.loaded {
+        background: none;
+      }
+
+      .frame img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transform: scale(1);
+        transition: transform 0.3s ease;
+      }
+
+      .frame:hover img {
+        transform: scale(1.1);
+      }
+
+      .gallery-overlay {
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.7) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        z-index: 10;
+        pointer-events: none;
+      }
+
+      .gallery-item:hover .gallery-overlay {
+        transform: translateY(0);
+      }
+
+      .gallery-icon {
+        opacity: 0;
+        transform: scale(0.5);
+        transition: all 0.3s ease;
+        pointer-events: none;
+      }
+
+      .gallery-item:hover .gallery-icon {
+        opacity: 1;
+        transform: scale(1);
+      }
+
+      .gallery-item img {
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      .gallery-item img.opacity-100 {
+        opacity: 1;
+      }
+
+      .modal {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+        transition: all 0.3s ease;
+      }
+
+      .modal.active {
+        visibility: visible;
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal.active .modal-container {
+        transform: scale(1);
+      }
+
+      .close-button {
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .close-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+      }
+
+      .modal-img {
+        transform: scale(0.95);
+        transition: all 0.3s ease;
+      }
+
+      .modal.active .modal-img {
+        transform: scale(1);
+      }
+
+      .modal-overlay {
+        backdrop-filter: blur(8px);
+        background: rgba(0, 0, 0, 0.8);
+      }
+
+      .image-navigation button {
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(4px);
+        transition: all 0.3s ease;
+      }
+
+      .image-navigation button:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
+
+      .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      /* Mobile Optimizations */
+      @media (max-width: 640px) {
+        .profile-cover {
+          height: 150px;
+        }
+
+        .profile-img {
+          width: 120px;
+          height: 120px;
+          margin-top: -40px;
+        }
+
+        .close-button {
+          top: -30px;
+          right: -10px;
+          width: 30px;
+          height: 30px;
+        }
+
+        .image-navigation button {
+          padding: 0.5rem;
+        }
+
+        .modal-container {
+          margin: 0 0.5rem;
+        }
+
+        .gallery-grid {
+          grid-template-columns: repeat(2, 1fr);
+          gap: 0.5rem;
+          padding: 0.5rem;
+        }
+
+        .px-6 {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        .py-8 {
+          padding-top: 1.5rem;
+          padding-bottom: 1.5rem;
+        }
+
+        .text-2xl {
+          font-size: 1.25rem;
+        }
+
+        .space-y-4 > * + * {
+          margin-top: 0.75rem;
+        }
+
+        .glass-effect {
+          margin: 0.5rem;
+        }
+      }
+
+      /* Improve touch targets */
+      @media (hover: none) {
+        .link-card {
+          padding: 1rem;
+          margin-bottom: 0.75rem;
+        }
+
+        button,
+        a {
+          min-height: 44px;
+          min-width: 44px;
+        }
+
+        input,
+        textarea {
+          font-size: 16px; /* Prevent iOS zoom on focus */
+        }
+      }
+
+      /* Add pull-to-refresh smooth scroll */
+      @supports (-webkit-overflow-scrolling: touch) {
+        body {
+          -webkit-overflow-scrolling: touch;
+        }
+      }
+
+      .gallery-overlay::after {
+        content: attr(data-count);
+        position: absolute;
+        bottom: 1rem;
+        right: 1rem;
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-size: 0.75rem;
+        color: white;
+      }
+
+      .modal-counter {
+        position: absolute;
+        bottom: 1rem;
+        left: 50%;
+        transform: translateX(-50%);
+        background: rgba(0, 0, 0, 0.5);
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        color: white;
+        font-size: 0.875rem;
+      }
+
+      .profile-img-container {
+        perspective: 1000px;
+        transform-style: preserve-3d;
+      }
+
+      .profile-img-wrapper {
+        position: relative;
+        transform-style: preserve-3d;
+        animation: float 6s ease-in-out infinite;
+      }
+
+      .profile-img {
+        border: 4px solid rgba(255, 255, 255, 0.9);
+        margin-top: -60px;
+        filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+        transition: all 0.3s ease;
+      }
+
+      .profile-img-wrapper::before {
+        content: "";
+        position: absolute;
+        inset: -4px;
+        background: linear-gradient(
+          45deg,
+          rgba(34, 36, 35, 0.3),
+          rgba(210, 219, 219, 0.3),
+          rgba(157, 156, 158, 0.3)
+        );
+        border-radius: 50%;
+        transform: translateZ(-10px);
+        filter: blur(15px);
+        opacity: 0.5;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0) rotate3d(1, 1, 1, 0deg);
+        }
+        50% {
+          transform: translateY(-10px) rotate3d(1, 1, 1, 3deg);
+        }
+        100% {
+          transform: translateY(0) rotate3d(1, 1, 1, 0deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="min-h-screen py-8 px-4">
+    <div class="max-w-2xl mx-auto">
+      <!-- Profile Section -->
+      <div
+        class="glass-effect rounded-3xl overflow-hidden shadow-xl animate-fade-in"
+      >
+        <!-- Cover Image -->
+        <div class="profile-cover animate-fade-in delay-100"></div>
+
+        <!-- Profile Info -->
+        <div class="px-6 py-4 text-center">
+          <!-- Profile Image -->
+          <div
+            class="flex justify-center animate-slide-up delay-200 profile-img-container"
+          >
+            <div class="profile-img-wrapper">
+              <img
+                src="img/profile.jpg"
+                alt="Profile"
+                class="w-48 h-48 rounded-full object-cover profile-img"
+              />
+            </div>
+          </div>
+
+          <!-- Name and Bio -->
+          <h1
+            class="text-2xl font-bold text-white mt-4 animate-slide-up delay-300"
+          >
+            Alfrid Kekang
+          </h1>
+          <p class="text-gray-200 text-sm mt-2 animate-slide-up delay-300">
+            Photographer | Videographer | Social Media Specialist
+          </p>
+
+          <!-- Music Player -->
+          <div class="mt-4">
+            <button
+              onclick="playPauseMusic()"
+              class="text-white hover:opacity-75 transition"
+            >
+              <i id="playPauseIcon" class="fas fa-pause text-xl"></i>
+            </button>
+            <audio id="musicPlayer" class="hidden" autoplay>
+              <source src="img/Ed Sheeran - Photograph.mp3" type="audio/mpeg" />
+            </audio>
+          </div>
+        </div>
+
+        <!-- Links -->
+        <div class="px-6 py-4 space-y-4">
+          <a
+            href="https://www.instagram.com/fransesco.alfriedo/"
+            class="link-card block text-white p-4 rounded-xl text-center bg-black/30 hover:bg-black/50 transition-all duration-300 animate-slide-up delay-400"
+          >
+            <i class="fab fa-instagram mr-2"></i>
+            Instagram
+          </a>
+          <a
+            href="https://www.facebook.com/share/191uRrJ8So/"
+            class="link-card block text-white p-4 rounded-xl text-center bg-black/30 hover:bg-black/50 transition-all duration-300 animate-slide-up delay-400"
+          >
+            <i class="fab fa-facebook mr-2"></i>
+            Facebook
+          </a>
+          <a
+            href="https://www.pinterest.com/alfridkekang"
+            class="link-card block text-white p-4 rounded-xl text-center bg-black/30 hover:bg-black/50 transition-all duration-300 animate-slide-up delay-400"
+          >
+            <i class="fab fa-pinterest mr-2"></i>
+            Pinterest
+          </a>
+          <a
+            href="https://github.com/alfridkekang"
+            class="link-card block text-white p-4 rounded-xl text-center bg-black/30 hover:bg-black/50 transition-all duration-300 animate-slide-up delay-400"
+          >
+            <i class="fab fa-github mr-2"></i>
+            Github
+          </a>
+        </div>
+
+        <!-- Instagram Gallery -->
+        <div class="px-6 py-8">
+          <h2 class="text-xl font-semibold text-white mb-4 text-center">
+            Instagram Gallery
+          </h2>
+          <div id="galleryLoader" class="text-center py-8 hidden">
+            <div
+              class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-white"
+            ></div>
+          </div>
+          <!-- Gallery Grid -->
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <!-- Nature Photography Group -->
+            <div
+              class="gallery-item relative group"
+              onclick="openModal('nature', 0)"
+            >
+              <div class="frame">
+                <img src="img/ecko/ecko01.jpg" data-src="img/ecko/ecko01.jpg""
+                alt="Nature Gallery" class="w-full h-full object-cover
+                transition duration-300 group-hover:scale-110" />
+                <div
+                  class="gallery-overlay absolute inset-0 flex items-center justify-center"
+                >
+                  <i class="fas fa-expand gallery-icon text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Portrait Photography Group -->
+            <div
+              class="gallery-item relative group"
+              onclick="openModal('portrait', 0)"
+            >
+              <div class="frame">
+                <img
+                  src="img/H&N/hn01.jpg"
+                  data-src="img/H&N/hn01.jpg"
+                  alt="Portrait Gallery"
+                  class="w-full h-full object-cover transition duration-300 group-hover:scale-110"
+                />
+                <div
+                  class="gallery-overlay absolute inset-0 flex items-center justify-center"
+                >
+                  <i class="fas fa-expand gallery-icon text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+
+            <!-- Landscape Photography Group -->
+            <div
+              class="gallery-item relative group"
+              onclick="openModal('landscape', 0)"
+            >
+              <div class="frame">
+                <img
+                  src="img/Ety/Ety_01.jpg"
+                  data-src="img/Ety/Ety_01.jpg"
+                  alt="Landscape Gallery"
+                  class="w-full h-full object-cover transition duration-300 group-hover:scale-110"
+                />
+                <div
+                  class="gallery-overlay absolute inset-0 flex items-center justify-center"
+                >
+                  <i class="fas fa-expand gallery-icon text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+            <div
+              class="gallery-item relative group"
+              onclick="openModal('Ivon', 0)"
+            >
+              <div class="frame">
+                <img
+                  src="img/ivon/iv01.jpg"
+                  data-src="img/ivon/iv01.jpg"
+                  alt="Landscape Gallery"
+                  class="w-full h-full object-cover transition duration-300 group-hover:scale-110"
+                />
+                <div
+                  class="gallery-overlay absolute inset-0 flex items-center justify-center"
+                >
+                  <i class="fas fa-expand gallery-icon text-white text-xl"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- View More Button -->
+          <div class="text-center mt-6">
+            <a
+              href="https://www.instagram.com/memoria_alf/"
+              class="inline-block bg-black/30 text-white px-6 py-2 rounded-full hover:bg-black/50 transition-all duration-300"
+            >
+              View More on Instagram
+            </a>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        <div class="px-6 py-8">
+          <h2 class="text-xl font-semibold text-white mb-4 text-center">
+            Hubungi Saya
+          </h2>
+          <form
+            id="contactForm"
+            class="space-y-4"
+            onsubmit="sendWhatsApp(event)"
+          >
+            <div>
+              <input
+                type="text"
+                id="name"
+                placeholder="Nama Anda"
+                class="w-full p-3 rounded-xl bg-black/30 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:border-white"
+              />
+            </div>
+            <div>
+              <textarea
+                id="message"
+                rows="4"
+                placeholder="Pesan Anda"
+                class="w-full p-3 rounded-xl bg-black/30 text-white placeholder-gray-400 border border-gray-600 focus:outline-none focus:border-white"
+              ></textarea>
+            </div>
+            <button
+              type="submit"
+              class="w-full bg-green-600 text-white p-3 rounded-xl hover:bg-green-700 transition-all duration-300"
+            >
+              <i class="fab fa-whatsapp mr-2"></i>Kirim
+            </button>
+          </form>
+        </div>
+
+        <!-- Footer -->
+        <div class="px-6 py-4 text-center">
+          <p class="text-sm text-gray-300">
+            &copy; 2025 Alfrid Kekang <i class="fas fa-heart text-white"></i>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="imageModal"
+      class="modal fixed inset-0 z-50 flex items-center justify-center"
+    >
+      <div class="modal-overlay absolute inset-0" onclick="closeModal()"></div>
+      <div class="modal-container relative z-10 max-w-4xl mx-auto p-4">
+        <div class="relative">
+          <img
+            id="modalImage"
+            src=""
+            alt="Modal Image"
+            class="modal-img max-h-[80vh] rounded-lg shadow-2xl"
+          />
+          <button
+            onclick="closeModal()"
+            class="close-button"
+            aria-label="Close modal"
+          >
+            <i class="fas fa-times text-2xl text-white"></i>
+          </button>
+          <div
+            class="image-navigation absolute inset-y-0 flex items-center justify-between w-full px-4"
+          >
+            <button
+              onclick="changeImage('prev')"
+              class="p-2 rounded-full text-white hover:bg-white/20 transition"
+            >
+              <i class="fas fa-chevron-left text-xl"></i>
+            </button>
+            <button
+              onclick="changeImage('next')"
+              class="p-2 rounded-full text-white hover:bg-white/20 transition"
+            >
+              <i class="fas fa-chevron-right text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Music Player Function
+      const musicPlayer = document.getElementById("musicPlayer");
+      const playPauseIcon = document.getElementById("playPauseIcon");
+      let isPlaying = true;
+
+      // Tambahkan event listener saat halaman dimuat
+      window.addEventListener("load", () => {
+        musicPlayer.play().catch(function (error) {
+          // Browser mungkin memblokir autoplay
+          isPlaying = false;
+          playPauseIcon.classList.remove("fa-pause");
+          playPauseIcon.classList.add("fa-play");
+        });
+      });
+
+      function playPauseMusic() {
+        if (isPlaying) {
+          musicPlayer.pause();
+          playPauseIcon.classList.remove("fa-pause");
+          playPauseIcon.classList.add("fa-play");
+        } else {
+          musicPlayer.play();
+          playPauseIcon.classList.remove("fa-play");
+          playPauseIcon.classList.add("fa-pause");
+        }
+        isPlaying = !isPlaying;
+      }
+
+      musicPlayer.addEventListener("ended", () => {
+        isPlaying = false;
+        playPauseIcon.classList.remove("fa-pause");
+        playPauseIcon.classList.add("fa-play");
+      });
+
+      // WhatsApp Form Function
+      function sendWhatsApp(e) {
+        e.preventDefault();
+
+        const name = document.getElementById("name").value;
+        const message = document.getElementById("message").value;
+        const phoneNumber = "6282237603979"; // Ganti dengan nomor WhatsApp Anda
+
+        if (!name || !message) {
+          alert("Mohon isi semua field!");
+          return;
+        }
+
+        const whatsappMessage = `Halo, saya ${name}.\n\n${message}`;
+        const encodedMessage = encodeURIComponent(whatsappMessage);
+        const whatsappURL = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${encodedMessage}`;
+
+        window.open(whatsappURL, "_blank");
+      }
+
+      // Modal functionality
+      const modal = document.getElementById("imageModal");
+      const modalImg = document.getElementById("modalImage");
+      let currentGroup = [];
+      let currentImageIndex = 0;
+      const galleryGroups = {
+        nature: [
+          "img/ecko/ecko01.jpg",
+          "img/ecko/ecko02.jpg",
+          "img/ecko/ecko03.jpg",
+          "img/ecko/ecko04.jpg",
+          "img/ecko/ecko05.jpg",
+          "img/ecko/ecko06.jpg",
+        ],
+        portrait: [
+          "img/H&N/hn01.jpg",
+          "img/h&n/hn02.jpg",
+          "img/h&n/hn03.jpg",
+          "img/h&n/hn04.jpg",
+          "img/h&n/hn05.jpg",
+          "img/h&n/hn06.jpg",
+          "img/h&n/hn07.jpg",
+        ],
+        landscape: [
+          "img/Ety/Ety_01.jpg",
+          "img/Ety/Ety_02.jpg",
+          "img/Ety/Ety_03.jpg",
+          "img/Ety/Ety_04.jpg",
+          "img/Ety/Ety_05.jpg",
+        ],
+        Ivon: [
+          "img/ivon/iv01.jpg",
+          "img/ivon/iv02.jpg",
+          "img/ivon/iv03.jpg",
+          "img/ivon/iv04.jpg",
+        ],
+      };
+
+      function openModal(groupName, index) {
+        currentGroup = galleryGroups[groupName];
+        currentImageIndex = index;
+        modalImg.src = currentGroup[currentImageIndex];
+        modal.classList.add("active");
+        document.body.style.overflow = "hidden";
+
+        // Preload adjacent images
+        if (currentGroup.length > 1) {
+          const nextIndex = (index + 1) % currentGroup.length;
+          const prevIndex =
+            (index - 1 + currentGroup.length) % currentGroup.length;
+          new Image().src = currentGroup[nextIndex];
+          new Image().src = currentGroup[prevIndex];
+        }
+      }
+
+      // Add touch swipe support for mobile devices
+      let touchStartX = 0;
+      let touchEndX = 0;
+
+      modal.addEventListener("touchstart", (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+      });
+
+      modal.addEventListener("touchend", (e) => {
+        touchEndX = e.changedTouches[0].screenX;
+        handleSwipe();
+      });
+
+      function handleSwipe() {
+        const swipeThreshold = 50;
+        const difference = touchStartX - touchEndX;
+
+        if (Math.abs(difference) > swipeThreshold) {
+          if (difference > 0) {
+            changeImage("next");
+          } else {
+            changeImage("prev");
+          }
+        }
+      }
+
+      function closeModal() {
+        modal.classList.remove("active");
+        document.body.style.overflow = "auto";
+
+        // Reset modal image after animation
+        setTimeout(() => {
+          modalImg.src = "";
+        }, 300);
+      }
+
+      // Close modal when clicking overlay
+      modal
+        .querySelector(".modal-overlay")
+        .addEventListener("click", closeModal);
+
+      // Prevent modal from closing when clicking on image
+      modal.querySelector(".modal-container").addEventListener("click", (e) => {
+        e.stopPropagation();
+      });
+
+      function changeImage(direction) {
+        if (direction === "next") {
+          currentImageIndex = (currentImageIndex + 1) % currentGroup.length;
+        } else {
+          currentImageIndex =
+            (currentImageIndex - 1 + currentGroup.length) % currentGroup.length;
+        }
+        modalImg.src = currentGroup[currentImageIndex];
+      }
+
+      // Close modal when clicking outside
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (!modal.classList.contains("active")) return;
+
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowLeft") changeImage("prev");
+        if (e.key === "ArrowRight") changeImage("next");
+      });
+
+      // Improved touch handling
+      let touchStartY = 0;
+      let touchEndY = 0;
+      let isSwiping = false;
+
+      document.addEventListener(
+        "touchstart",
+        (e) => {
+          touchStartY = e.touches[0].clientY;
+          isSwiping = true;
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "touchmove",
+        (e) => {
+          if (!isSwiping) return;
+          touchEndY = e.touches[0].clientY;
+        },
+        { passive: true }
+      );
+
+      document.addEventListener(
+        "touchend",
+        () => {
+          isSwiping = false;
+        },
+        { passive: true }
+      );
+
+      // Add lazy loading for gallery images
+      // Remove the existing lazy loading initialization
+      document.addEventListener("DOMContentLoaded", () => {
+        const galleryImages = document.querySelectorAll(".gallery-item img");
+
+        galleryImages.forEach((img) => {
+          // Load image immediately
+          if (img.dataset.src) {
+            img.src = img.dataset.src;
+          }
+
+          // Add loading animation
+          img.onload = () => {
+            img.classList.add("opacity-100");
+            img.parentElement.classList.add("loaded");
+          };
+        });
+      });
+
+      // Improved image loading
+      // Update preloadGalleryImages function
+      function preloadGalleryImages() {
+        const imageUrls = [
+          "img/MMRA1106.jpg",
+          "img/MMRA9195.jpg",
+          "img/MMRA9934.jpg",
+          "img/MMRA8441.jpg",
+          "img/MMRA3609.jpg",
+          "img/DSCF1173.jpg",
+        ];
+
+        imageUrls.forEach((url) => {
+          const img = new Image();
+          img.src = url;
+        });
+      }
+
+      // Initialize lazy loading with fade-in effect
+      function initializeLazyLoading() {
+        const imageObserver = new IntersectionObserver((entries, observer) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              const img = entry.target;
+              img.src = img.dataset.src;
+              img.classList.add("opacity-100");
+              observer.unobserve(img);
+            }
+          });
+        });
+
+        document.querySelectorAll(".gallery-item img").forEach((img) => {
+          img.classList.add("opacity-0", "transition-opacity", "duration-500");
+          imageObserver.observe(img);
+        });
+      }
+
+      document.addEventListener("DOMContentLoaded", () => {
+        preloadGalleryImages();
+        initializeLazyLoading();
+      });
+    </script>
+  </body>
+</html>
